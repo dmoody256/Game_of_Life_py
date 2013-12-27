@@ -28,7 +28,7 @@ class MainWindow(QtGui.QMainWindow):
         
     def populateStructures(self):
         
-        file = open('structures.cell', 'r')
+        file = open('structures.txt', 'r')
         
         currentstructure = []
         row = -1
