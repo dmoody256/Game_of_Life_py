@@ -1,6 +1,6 @@
 #! /usr/bin/python
 
-import sys, math, time, re
+import sys, math, time
 
 from PyQt4 import QtCore, QtGui
 
@@ -9,9 +9,6 @@ class MainWindow(QtGui.QMainWindow):
     def __init__(self):
 
         super(MainWindow, self).__init__()
-        
-        
-        #self.showFullScreen()      
         
         self.MainWidget = MainWidget(50, [])
         self.setGeometry(100, 100, 1000, 800)
@@ -69,7 +66,7 @@ class ControlToolbar(QtGui.QToolBar):
     def __init__(self, parent):
         super(ControlToolbar, self).__init__()
         
-        self.setWindowTitle('Main Menu')
+        self.setWindowTitle('Control')
         self.setMovable(False)
         
         self.parent = parent
@@ -83,7 +80,7 @@ class ControlToolbar(QtGui.QToolBar):
         self.addStructureText()
         self.addGenerationCounter()
     
-        parent.addToolBar(QtCore.Qt.BottomToolBarArea, self)
+        self.parent.addToolBar(QtCore.Qt.BottomToolBarArea, self)
         
     def addStructureButton(self):
 
@@ -204,11 +201,11 @@ class MainWidget(QtGui.QWidget):
                     
     def setBuildCursor(self):
         
-        buildtext = self.parent().StructureEditText.text()
+        self.buildtext = self.parent().StructureEditText.text()
         editor = self.parent().StructureEditText
         palette = editor.palette()
         
-        if(self.Building == 0 and any(buildtext == val for val in self.parent().structurelist)):
+        if(self.Building == 0 and any(self.buildtext == val for val in self.parent().structurelist)):
            
             palette.setColor(QtGui.QPalette.Active, QtGui.QPalette.Base, QtGui.QColor(195, 253, 184))
             editor.setPalette(palette)
@@ -229,9 +226,8 @@ class MainWidget(QtGui.QWidget):
             self.Building = 0
             QtGui.QApplication.restoreOverrideCursor()
             
-            buildtext = self.parent().StructureEditText.text()
             structurelist = self.parent().structurelist
-            structurepos = [i for i,x in enumerate(structurelist) if x == buildtext]
+            structurepos = [i for i,x in enumerate(structurelist) if x == self.buildtext]
             
             structurepoints = self.parent().structures[structurepos[0]]
             pos = event.pos()
@@ -258,7 +254,6 @@ class MainWidget(QtGui.QWidget):
         else:
             self.LivingCells[ypos][xpos] = 1
             
-        print ('changed' + str(xpos) + 'and' + str(ypos))
         self.repaint()
 
     def paintEvent(self, e):
@@ -323,7 +318,7 @@ class MainWidget(QtGui.QWidget):
             
             QtGui.qApp.processEvents()
             
-            time.sleep(.1)
+            time.sleep(.01)
 
     def getNieghbors(self, y, x):
         total = 0
